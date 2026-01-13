@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The World Infinity - AlphaDev Two</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: sans-serif; }
+        canvas { display: block; }
+        
+        /* Controles Mobile */
+        #joystick-container { position: fixed; bottom: 40px; left: 40px; width: 120px; height: 120px; z-index: 10; }
+        .btn { 
+            position: fixed; width: 70px; height: 70px; background: rgba(0,0,0,0.5); 
+            border: 2px solid white; border-radius: 50%; z-index: 10; 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; font-weight: bold; font-size: 11px; touch-action: none; 
+        }
+        #jump-button { bottom: 40px; right: 130px; }
+        #build-button { bottom: 130px; right: 40px; background: rgba(0,255,0,0.2); }
+        #delete-button { bottom: 40px; right: 40px; background: rgba(255,0,0,0.2); }
+        
+        /* Inventário (Hotbar) */
+        #inventory {
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; background: rgba(0,0,0,0.6);
+            padding: 8px; border-radius: 10px; z-index: 15; border: 1px solid rgba(255,255,255,0.3);
+        }
+        .slot {
+            width: 45px; height: 45px; border: 2px solid #fff; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; background-size: cover; background-color: #444;
+        }
+        .slot.selected { border-color: #ff0; box-shadow: 0 0 10px #ff0; }
+        .slot img { width: 100%; height: 100%; image-rendering: pixelated; }
+
+        /* Menu de Pause */
+        #pause-btn { 
+            position: fixed; top: 20px; right: 20px; z-index: 20; 
+            background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; 
+            color: white; cursor: pointer; border: 1px solid white; 
+        }
+        #settings-menu { 
+            display: none; position: fixed; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); 
+            padding: 25px; border-radius: 15px; color: white; z-index: 100; 
+            text-align: center; min-width: 250px; border: 2px solid #555; 
+        }
+        .menu-btn { width: 100%; margin: 8px 0; padding: 12px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+
+        #crosshair { position: fixed; top: 50%; left: 50%; width: 10px; height: 10px; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div id="crosshair"></div>
+    <div id="joystick-container"></div>
+    <div id="jump-button" class="btn">PULAR</div>
+    <div id="build-button" class="btn">BOTAR</div>
+    <div id="delete-button" class="btn">QUEBRAR</div>
+    
+   <div id="inventory">
+    <div class="slot selected" onclick="mudarBloco('grass', this)"><img src="grass.png" alt="Grama"></div>
+    <div class="slot" onclick="mudarBloco('tijolo', this)"><img src="stonebrick.png" alt="Tijolo"></div>
+    <div class="slot" onclick="mudarBloco('log', this)"><img src="log.png" alt="Tronco"></div>
+    <div class="slot" onclick="mudarBloco('leaf', this)"><img src="leave.png" alt="Folha"></div>
+    <div class="slot" onclick="mudarBloco('mato', this)"><img src="bush.png" alt="Mato"></div>
+    <div class="slot" id="backpack-slot" onclick="abrirMochila()">
+        <span style="font-size: 20px;">🎒</span>
+    </div>
+</div>
+
+<style>
+    /* Estilo atualizado dos slots */
+    #inventory {
+        position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 5px; background: rgba(0,0,0,0.7);
+        padding: 6px; border-radius: 8px; z-index: 100;
+    }
+    .slot {
+        width: 42px; height: 42px; border: 2px solid #888; background: #333;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 4px; cursor: pointer;
+    }
+    .slot.selected { border-color: #ff0; background: #555; }
+    .slot img { width: 100%; height: 100%; image-rendering: pixelated; }
+</style>
+
+
+    <div id="pause-btn" onclick="toggleMenu()">⚙️ MENU</div>
+
+    <div id="settings-menu">
+        <h2 style="margin-top:0">PAUSE</h2>
+        <button class="menu-btn" style="background: #2196F3;" onclick="baixarMundo()">📥 EXPORTAR</button>
+        <label class="menu-btn" style="background: #4CAF50; display: block;">
+            📤 IMPORTAR
+            <input type="file" id="import-input" style="display:none" onchange="carregarMundo(event)">
+        </label>
+        <button class="menu-btn" style="background: #f44336;" onclick="novoMundo()">🗑️ RESETAR</button>
+        <button class="menu-btn" style="background: #777;" onclick="toggleMenu()">VOLTAR</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
